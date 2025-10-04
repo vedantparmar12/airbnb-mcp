@@ -2,12 +2,14 @@
 
 ## 🎯 Problems Solved
 
-You had **5 critical issues**:
+You had **7 critical issues**:
 1. **Unicode Error** - `UnicodeEncodeError` on Windows when server started (FastMCP printing icons)
 2. **Infinite Loop** - `compare_listings` was recursively calling itself, hitting the 5-listing limit
 3. **stdio Transport** - Server wasn't using proper MCP protocol, causing connection issues
 4. **Crawl4AI stdout Pollution** - Crawl4AI printing progress messages to stdout, breaking MCP JSON-RPC protocol
 5. **Empty Extraction Results** - Extraction returning `[]` instead of actual Airbnb data
+6. **CrawlResult Error Attribute** - `'CrawlResult' object has no attribute 'error'` crash
+7. **NetworkIdle Timeout** - Page never reaching networkidle, causing 60s timeouts
 
 ## ✅ Solution Applied
 
