@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.crawl4ai.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
