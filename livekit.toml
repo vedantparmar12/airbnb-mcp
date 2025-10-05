@@ -1,0 +1,23 @@
+# LiveKit Agent Configuration
+# This file tells LiveKit Cloud how to run your agent
+
+[agent]
+# Type of agent job - "room" means it joins rooms
+job_type = "room"
+
+# Worker type identifier
+worker_type = "airbnb-voice-agent"
+
+# Agent metadata (optional)
+[agent.metadata]
+name = "Airbnb Voice Assistant"
+description = "Voice agent for Airbnb search with MCP integration"
+version = "1.0.0"
+
+# Prewarm settings - keep instances ready for faster startup
+[agent.prewarm]
+count = 1  # Number of warm instances to keep ready
+
+# Environment variables (optional - can also set in LiveKit Cloud dashboard)
+# [agent.environment]
+# Note: Set sensitive keys in LiveKit Cloud dashboard instead of here
