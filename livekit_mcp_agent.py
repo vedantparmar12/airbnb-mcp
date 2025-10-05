@@ -1,16 +1,3 @@
-"""
-LiveKit Voice Agent with MCP Airbnb Integration + Ollama
-=========================================================
-Voice assistant that connects to your MCP Airbnb server for real-time
-property search, pricing analysis, and booking assistance.
-
-Uses:
-- Ollama (local LLM) - FREE
-- Cartesia TTS - FREE tier
-- Deepgram STT - Paid
-- MCP Airbnb Server - Your local server
-"""
-
 from dotenv import load_dotenv
 from livekit import rtc
 from livekit import agents
@@ -37,11 +24,9 @@ from datetime import datetime
 import logging
 import os
 import httpx
-
+import re
 # uncomment to enable Krisp background voice/noise cancellation
-# from livekit.plugins import noise_cancellation
-
-# Load environment variables
+from livekit.plugins import noise_cancellation
 load_dotenv(".env")
 
 # Configure logging
@@ -50,17 +35,11 @@ logger = logging.getLogger(__name__)
 
 
 def clean_text_for_voice(text: str) -> str:
-    """
-    Clean text response to remove formatting characters that sound bad in TTS.
-    Removes: pipes, asterisks, markdown tables, bullet points, etc.
-    """
-    import re
 
     # Remove markdown tables (lines with multiple pipes)
     lines = text.split('\n')
     cleaned_lines = []
     for line in lines:
-        # Skip lines that look like table rows or separators
         if line.count('|') >= 2 or re.match(r'^[\s\-|:]+$', line):
             continue
         cleaned_lines.append(line)
@@ -133,7 +112,6 @@ def prewarm(proc: JobProcess):
 
 
 class Assistant(Agent):
-    """Main voice assistant implementation."""
     
     def __init__(self):
         super().__init__(
