@@ -2,18 +2,22 @@
 livekit-agents>=0.9.0
 
 # LLM Plugins (includes Ollama support)
-livekit-plugins-openai
+livekit-plugins-openai>=1.2.14
 livekit-plugins-turn-detector
 
 # STT Plugin
-livekit-plugins-deepgram
+livekit-plugins-deepgram>=1.2.14
+
+# TTS Plugin
+livekit-plugins-cartesia>=1.2.14
 
 # VAD Plugin
 livekit-agents[mcp]
-livekit-plugins-silero
+livekit-plugins-silero>=1.2.14
 
 # Environment variables
-python-dotenv
+python-dotenv>=1.1.1
 
-# HTTP client for health checks
-httpx
+# HTTP clients
+httpx>=0.27.0
+requests>=2.31.0
