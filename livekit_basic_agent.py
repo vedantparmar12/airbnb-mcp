@@ -1,6 +1,4 @@
 """
-LiveKit Voice Agent - Quick Start
-==================================
 The simplest possible LiveKit voice agent to get you started.
 Requires only OpenAI and Deepgram API keys.
 """
@@ -17,7 +15,6 @@ import os
 load_dotenv(".env")
 
 class Assistant(Agent):
-    """Basic voice assistant with Airbnb booking capabilities."""
 
     def __init__(self):
         super().__init__(
@@ -96,7 +93,6 @@ class Assistant(Agent):
             ],
         }
 
-        # Track bookings
         self.bookings = []
 
     @function_tool
@@ -130,14 +126,6 @@ class Assistant(Agent):
 
     @function_tool
     async def book_airbnb(self, context: RunContext, airbnb_id: str, guest_name: str, check_in_date: str, check_out_date: str) -> str:
-        """Book an Airbnb.
-
-        Args:
-            airbnb_id: The ID of the Airbnb to book (e.g., 'sf001')
-            guest_name: Name of the guest making the booking
-            check_in_date: Check-in date (e.g., 'January 15, 2025')
-            check_out_date: Check-out date (e.g., 'January 20, 2025')
-        """
         # Find the Airbnb
         airbnb = None
         for city_listings in self.airbnbs.values():
@@ -177,7 +165,6 @@ class Assistant(Agent):
 async def entrypoint(ctx: agents.JobContext):
     """Entry point for the agent."""
 
-    # Configure the voice pipeline with Ollama LLM + Cartesia TTS
     session = AgentSession(
         stt=deepgram.STT(
             model="nova-2",
