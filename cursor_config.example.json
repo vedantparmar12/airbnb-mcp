@@ -1,0 +1,15 @@
+{
+  "servers": {
+    "airbnb": {
+      "url": "stdio",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/path/to/mcp-server-airbnb",
+        "run",
+        "python",
+        "server.py"
+      ]
+    }
+  }
+}

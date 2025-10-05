@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "airbnb": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "C:\\path\\to\\mcp-server-airbnb",
+        "run",
+        "python",
+        "server.py"
+      ]
+    }
+  }
+}
