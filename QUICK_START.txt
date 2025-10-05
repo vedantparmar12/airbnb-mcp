@@ -1,0 +1,76 @@
+═══════════════════════════════════════════════════════════════
+  🎙️ LIVEKIT VOICE AGENT - QUICK START
+  100% Configured & Ready to Use!
+═══════════════════════════════════════════════════════════════
+
+✅ YOUR CONFIGURATION (All Set via .env):
+
+   LLM:  Ollama gpt-oss:20b-cloud (FREE, Local, Fast!)
+   TTS:  Cartesia (FREE tier)
+   STT:  Deepgram (Paid, you have it)
+   MCP:  Your Airbnb Server (6 tools via stdio)
+
+═══════════════════════════════════════════════════════════════
+
+🚀 TO RUN (Just 2 Commands):
+
+1. Start Ollama (if not running):
+
+   ollama serve
+
+2. Run the voice agent:
+
+   cd C:\Users\vedan\Desktop\mcp-rag\voice-agent
+   python livekit_mcp_agent.py console
+
+═══════════════════════════════════════════════════════════════
+
+🎤 VOICE COMMANDS TO TRY:
+
+   "Search for Airbnbs in Goa"
+   "Find me places in Mumbai for 2 people"
+   "Get details for listing ABC123"
+   "Compare prices for next week vs next month"
+   "Calculate total budget for 3 nights"
+   "Show only 5-star rated places"
+
+═══════════════════════════════════════════════════════════════
+
+✅ WHAT YOU'LL SEE WHEN IT WORKS:
+
+   ✓ "Agent session started"
+   ✓ "6 tools available: search, details, price_analyzer..."
+   ✓ Tool calls like "airbnb_search(location='Goa')"
+   ✓ Natural voice responses
+
+═══════════════════════════════════════════════════════════════
+
+🐛 IF SOMETHING DOESN'T WORK:
+
+   1. Check Ollama:
+      ollama list | grep gpt-oss
+      (Should show: gpt-oss:20b-cloud)
+
+   2. Check UV:
+      uv --version
+
+   3. Test MCP manually:
+      cd C:\Users\vedan\Desktop\mcp-rag\travel-agent-system\airbnb\mcp-server-airbnb
+      uv run python server.py
+      (Press Ctrl+C to stop)
+
+═══════════════════════════════════════════════════════════════
+
+📚 DOCUMENTATION:
+
+   - FINAL_SETUP_GUIDE.md    - Complete guide
+   - README_FINAL.md         - Overview
+   - SETUP_MCP_STDIO.md      - MCP details
+
+═══════════════════════════════════════════════════════════════
+
+🎯 YOUR CONFIGURATION IS 100% READY!
+
+Just run:  python livekit_mcp_agent.py console
+
+═══════════════════════════════════════════════════════════════
