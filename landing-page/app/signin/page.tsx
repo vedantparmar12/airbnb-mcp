@@ -72,7 +72,7 @@ export default function SignInPage() {
             <div className="space-y-6">
               {/* Benefits */}
               <div className="space-y-3">
-                <h2 className="font-semibold text-lg">What you'll get:</h2>
+                <h2 className="font-semibold text-lg">What you&apos;ll get:</h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-start">
                     <span className="text-primary mr-2">✓</span>

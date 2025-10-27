@@ -226,10 +226,10 @@ export function VoiceInteraction() {
             What you can ask:
           </p>
           <ul className="text-sm text-muted-foreground space-y-1">
-            <li>• "Find me Airbnb listings in Paris"</li>
-            <li>• "Show me beach properties under $150 per night"</li>
-            <li>• "Compare these two listings for me"</li>
-            <li>• "Calculate the total cost for a 5-day trip"</li>
+            <li>• &quot;Find me Airbnb listings in Paris&quot;</li>
+            <li>• &quot;Show me beach properties under $150 per night&quot;</li>
+            <li>• &quot;Compare these two listings for me&quot;</li>
+            <li>• &quot;Calculate the total cost for a 5-day trip&quot;</li>
           </ul>
         </div>
       </div>
