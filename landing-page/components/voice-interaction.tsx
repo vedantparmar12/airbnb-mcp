@@ -270,7 +270,7 @@ function SimpleVoiceAssistant() {
           {state === "listening" && "🎤 Listening..."}
           {state === "thinking" && "🤔 Processing..."}
           {state === "speaking" && "🗣️ VoycePlan is responding..."}
-          {state === "idle" && "💬 Say something to start"}
+          {!state && "💬 Say something to start"}
         </h3>
         <p className="text-sm text-muted-foreground">
           Speak naturally about your travel plans. Pause for 1.5 seconds to finish.
