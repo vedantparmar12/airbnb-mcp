@@ -285,7 +285,7 @@ function SimpleVoiceAssistant() {
       {/* Transcript Display */}
       <div className="w-full max-w-2xl space-y-4">
         {/* User transcript */}
-        {userTranscript && state !== "idle" && (
+        {userTranscript && state && (
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
             <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">You said:</p>
             <p className="text-sm">{userTranscript}</p>
