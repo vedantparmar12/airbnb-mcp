@@ -1,31 +1,54 @@
-from config import LOG_LEVEL, LOG_FORMAT
+# Fast startup: Fix Windows encoding FIRST, then import modules
 import sys
-import logging
 import io
-import asyncio
-import json
-from mcp.server import Server
-from mcp import types
-from mcp.server.stdio import stdio_server
-from tools import (
-    airbnb_search,
-    airbnb_listing_details,
-    airbnb_price_analyzer,
-    airbnb_trip_budget,
-    airbnb_smart_filter,
-    airbnb_compare_listings
-)
 
-# Fix Windows UTF-8 encoding issues
+# Fix Windows UTF-8 encoding issues BEFORE any logging
 if sys.platform == 'win32':
     if isinstance(sys.stdout, io.TextIOWrapper):
         sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     if isinstance(sys.stderr, io.TextIOWrapper):
         sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
+# Now import everything else
+from config import LOG_LEVEL, LOG_FORMAT
+import logging
+import asyncio
+import json
+from mcp.server import Server
+from mcp import types
+from mcp.server.stdio import stdio_server
 
+# Defer tool imports until needed (lazy loading)
+# This speeds up initial server startup
+_tools_loaded = False
+_tool_functions = {}
+
+def _load_tools():
+    """Lazy load tools only when needed"""
+    global _tools_loaded, _tool_functions
+    if not _tools_loaded:
+        from tools import (
+            airbnb_search,
+            airbnb_listing_details,
+            airbnb_price_analyzer,
+            airbnb_trip_budget,
+            airbnb_smart_filter,
+            airbnb_compare_listings
+        )
+        _tool_functions = {
+            "airbnb_search": airbnb_search,
+            "airbnb_listing_details": airbnb_listing_details,
+            "airbnb_price_analyzer": airbnb_price_analyzer,
+            "airbnb_trip_budget": airbnb_trip_budget,
+            "airbnb_smart_filter": airbnb_smart_filter,
+            "airbnb_compare_listings": airbnb_compare_listings,
+        }
+        _tools_loaded = True
+    return _tool_functions
+
+# Minimal logging setup
 logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL),
+    level=getattr(logging, LOG_LEVEL, logging.WARNING),  # Less verbose by default
     format=LOG_FORMAT,
     stream=sys.stderr,
     encoding='utf-8',
@@ -163,21 +186,14 @@ async def list_tools() -> list[types.Tool]:
 async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
     """Handle tool calls"""
     try:
-        if name == "airbnb_search":
-            result = await airbnb_search(**arguments)
-        elif name == "airbnb_listing_details":
-            result = await airbnb_listing_details(**arguments)
-        elif name == "airbnb_price_analyzer":
-            result = await airbnb_price_analyzer(**arguments)
-        elif name == "airbnb_trip_budget":
-            result = await airbnb_trip_budget(**arguments)
-        elif name == "airbnb_smart_filter":
-            result = await airbnb_smart_filter(**arguments)
-        elif name == "airbnb_compare_listings":
-            result = await airbnb_compare_listings(**arguments)
-        else:
+        # Load tools on first call (lazy loading)
+        tools = _load_tools()
+        
+        if name not in tools:
             raise ValueError(f"Unknown tool: {name}")
-
+        
+        # Execute the tool
+        result = await tools[name](**arguments)
         return [types.TextContent(type="text", text=result)]
     except Exception as e:
         logger.error(f"Error calling tool {name}: {e}")
@@ -185,10 +201,10 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
 
 
 async def main():
-    """Main entry point"""
-    logger.info("Starting Airbnb MCP Server")
-    logger.info("6 tools available: search, details, price_analyzer, trip_budget, smart_filter, compare_listings")
-
+    """Main entry point - Fast startup with minimal logging"""
+    # Minimal logging - server is ready immediately
+    logger.debug("Airbnb MCP Server starting...")
+    
     # Run the MCP server with stdio transport
     async with stdio_server() as (read_stream, write_stream):
         await app.run(read_stream, write_stream, app.create_initialization_options())

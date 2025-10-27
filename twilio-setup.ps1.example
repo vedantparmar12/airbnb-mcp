@@ -1,0 +1,16 @@
+# Twilio Configuration for Telephony
+#
+# SETUP INSTRUCTIONS:
+# 1. Copy this file to: twilio-setup.ps1
+# 2. Replace the placeholder values with your actual Twilio credentials
+# 3. Run: .\twilio-setup.ps1
+
+$env:TWILIO_ACCOUNT_SID = "YOUR_TWILIO_ACCOUNT_SID_HERE"
+$env:TWILIO_AUTH_TOKEN = "YOUR_TWILIO_AUTH_TOKEN_HERE"
+$env:TWILIO_API_KEY = "YOUR_TWILIO_API_KEY_HERE"
+$env:TWILIO_API_SECRET = "YOUR_TWILIO_API_SECRET_HERE"
+$env:TWILIO_PHONE_NUMBER = "YOUR_PHONE_NUMBER_HERE"
+
+Write-Host "Twilio environment variables set" -ForegroundColor Green
+Write-Host "Account SID: $($env:TWILIO_ACCOUNT_SID.Substring(0, 10))..." -ForegroundColor Cyan
+Write-Host "Phone Number: $env:TWILIO_PHONE_NUMBER" -ForegroundColor Cyan

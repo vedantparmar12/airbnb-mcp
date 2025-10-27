@@ -1,0 +1,15 @@
+{
+  "dispatch_rule": {
+    "rule": {
+      "dispatchRuleIndividual": {
+        "roomPrefix": "airbnb-call-"
+      }
+    },
+    "name": "Airbnb Agent Dispatcher",
+    "roomConfig": {
+      "agents": [{
+        "agentName": "airbnb-voice-agent"
+      }]
+    }
+  }
+}

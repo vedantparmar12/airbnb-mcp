@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Airbnb Voice Agent Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.5.8/dist/livekit-client.umd.min.js"></script>
+</head>
+<body>
+    <h1>Airbnb Voice Agent</h1>
+    <button id="connect">Connect & Talk</button>
+    <button id="disconnect" disabled>Disconnect</button>
+    <div id="status">Not connected</div>
+
+    <script>
+        const LiveKit = window.LivekitClient;
+        let room = null;
+
+        // Replace with your actual values
+        const LIVEKIT_URL = 'wss://airbnb-voice-agent-4ahy6tsh.livekit.cloud';
+        const TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NTk2OTUzNDYsImlkZW50aXR5IjoidXNlcjEiLCJpc3MiOiJBUEl1RGd3TGkyTWVrNjYiLCJuYW1lIjoidXNlcjEiLCJuYmYiOjE3NTk2OTE3NDYsInN1YiI6InVzZXIxIiwidmlkZW8iOnsicm9vbSI6InRlc3Qtcm9vbSIsInJvb21Kb2luIjp0cnVlfX0.ARW__gfIxzVgoO5sIWDpl1LUQ9RxKBWXaNmpRhAgUAs';
+
+        document.getElementById('connect').onclick = async () => {
+            try {
+                room = new LiveKit.Room();
+
+                room.on('connected', () => {
+                    document.getElementById('status').textContent = 'Connected! Agent is joining...';
+                    document.getElementById('connect').disabled = true;
+                    document.getElementById('disconnect').disabled = false;
+                });
+
+                room.on('participantConnected', (participant) => {
+                    console.log('Participant joined:', participant.identity);
+                    if (participant.identity.includes('agent')) {
+                        document.getElementById('status').textContent = 'Agent joined! Start talking...';
+                    }
+                });
+
+                room.on('trackSubscribed', (track, publication, participant) => {
+                    if (track.kind === 'audio') {
+                        const audioElement = track.attach();
+                        document.body.appendChild(audioElement);
+                        console.log('Receiving audio from:', participant.identity);
+                    }
+                });
+
+                // Connect to room
+                await room.connect(LIVEKIT_URL, TOKEN);
+
+                // Publish microphone
+                await room.localParticipant.setMicrophoneEnabled(true);
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('status').textContent = 'Error: ' + error.message;
+            }
+        };
+
+        document.getElementById('disconnect').onclick = () => {
+            if (room) {
+                room.disconnect();
+                document.getElementById('status').textContent = 'Disconnected';
+                document.getElementById('connect').disabled = false;
+                document.getElementById('disconnect').disabled = true;
+            }
+        };
+    </script>
+</body>
+</html>

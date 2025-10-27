@@ -12,6 +12,6 @@ REQUEST_TIMEOUT = 30
 # MCP Settings
 IGNORE_ROBOTS_TXT = "--ignore-robots-txt" in sys.argv
 
-# Logging Settings
-LOG_LEVEL = "INFO"
+# Logging Settings - WARNING for faster startup
+LOG_LEVEL = "WARNING"  # Reduced verbosity for production use
 LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
