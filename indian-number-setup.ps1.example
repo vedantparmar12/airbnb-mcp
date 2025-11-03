@@ -1,0 +1,37 @@
+# Setup Indian Phone Number with Twilio
+# This script helps you configure an Indian number for your voice agent
+#
+# SETUP INSTRUCTIONS:
+# 1. Copy this file to: indian-number-setup.ps1
+# 2. Replace the placeholder values with your actual Twilio credentials
+# 3. Follow the steps below
+
+# Your Twilio credentials (get from https://console.twilio.com/)
+$env:TWILIO_ACCOUNT_SID = "YOUR_TWILIO_ACCOUNT_SID_HERE"
+$env:TWILIO_AUTH_TOKEN = "YOUR_TWILIO_AUTH_TOKEN_HERE"
+
+Write-Host "=== Indian Phone Number Setup ===" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Step 1: Buy Indian Number" -ForegroundColor Yellow
+Write-Host "  Go to: https://console.twilio.com/us1/develop/phone-numbers/manage/search"
+Write-Host "  - Select Country: India (+91)"
+Write-Host "  - Click 'Search' and buy a number"
+Write-Host ""
+Write-Host "Step 2: Configure the number" -ForegroundColor Yellow
+Write-Host "  - Click on the purchased number"
+Write-Host "  - Voice Configuration → TwiML Bin"
+Write-Host "  - Select: 'LiveKit Airbnb Agent'"
+Write-Host "  - Save"
+Write-Host ""
+Write-Host "Step 3: Update LiveKit inbound trunk" -ForegroundColor Yellow
+Write-Host "  - Go to: https://cloud.livekit.io/projects/p_/telephony/config"
+Write-Host "  - Edit your inbound trunk"
+Write-Host "  - Add your new Indian number: +91XXXXXXXXXX"
+Write-Host ""
+Write-Host "Step 4: Test!" -ForegroundColor Green
+Write-Host "  Call your new Indian number from any phone in India"
+Write-Host ""
+Write-Host "Estimated Cost:" -ForegroundColor Cyan
+Write-Host "  - Number: ~₹75/month"
+Write-Host "  - Inbound calls: ~₹0.50/min"
+Write-Host "  - Total: Very affordable for testing!"

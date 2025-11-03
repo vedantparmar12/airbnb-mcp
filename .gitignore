@@ -6,6 +6,16 @@ dist/
 wheels/
 *.egg-info
 .env
+.env.production
+.env.local
 
 # Virtual environments
 .venv
+
+# Setup scripts with credentials (use .example versions)
+twilio-setup.ps1
+indian-number-setup.ps1
+
+# Landing page env files
+landing-page\.env.local
+.vercel
