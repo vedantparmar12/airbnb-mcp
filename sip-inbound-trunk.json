@@ -1,7 +1,0 @@
-{
-  "trunk": {
-    "name": "Airbnb Voice Agent Inbound",
-    "numbers": ["+1YOURNEWNUMBER"],
-    "krispEnabled": true
-  }
-}
