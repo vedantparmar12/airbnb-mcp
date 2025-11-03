@@ -18,3 +18,4 @@ indian-number-setup.ps1
 
 # Landing page env files
 landing-page\.env.local
+.vercel
