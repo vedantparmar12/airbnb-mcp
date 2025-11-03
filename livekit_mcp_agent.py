@@ -1,16 +1,3 @@
-"""
-LiveKit Voice Agent with MCP Airbnb Integration + Ollama
-=========================================================
-Voice assistant that connects to your MCP Airbnb server for real-time
-property search, pricing analysis, and booking assistance.
-
-Uses:
-- Ollama (local LLM) - FREE
-- Cartesia TTS - FREE tier
-- Deepgram STT - Paid
-- MCP Airbnb Server - Your local server
-"""
-
 from dotenv import load_dotenv
 from livekit import rtc
 from livekit import agents
@@ -37,11 +24,9 @@ from datetime import datetime
 import logging
 import os
 import httpx
-
-# Enable Krisp background voice/noise cancellation
+import re
+# uncomment to enable Krisp background voice/noise cancellation
 from livekit.plugins import noise_cancellation
-
-# Load environment variables
 load_dotenv(".env")
 
 # Configure logging
@@ -50,17 +35,11 @@ logger = logging.getLogger(__name__)
 
 
 def clean_text_for_voice(text: str) -> str:
-    """
-    Clean text response to remove formatting characters that sound bad in TTS.
-    Removes: pipes, asterisks, markdown tables, bullet points, etc.
-    """
-    import re
 
     # Remove markdown tables (lines with multiple pipes)
     lines = text.split('\n')
     cleaned_lines = []
     for line in lines:
-        # Skip lines that look like table rows or separators
         if line.count('|') >= 2 or re.match(r'^[\s\-|:]+$', line):
             continue
         cleaned_lines.append(line)
@@ -133,8 +112,7 @@ def prewarm(proc: JobProcess):
 
 
 class Assistant(Agent):
-    """Main voice assistant implementation."""
-
+    
     def __init__(self):
         super().__init__(
             instructions="""You are a helpful and friendly Airbnb voice assistant.
@@ -149,10 +127,11 @@ class Assistant(Agent):
             - airbnb_smart_filter: Advanced search with filters
             - airbnb_compare_listings: Compare multiple listings side-by-side
 
-            VOICE FORMATTING RULES:
+            CRITICAL VOICE FORMATTING RULES:
+            - This is a VOICE conversation, not text chat
             - NEVER use tables, pipes (|), asterisks, bullets, or special formatting
             - NEVER say "vertical bar", "pipe", "asterisk", or read punctuation
-            - Speak in natural, flowing sentences
+            - Speak in natural, flowing sentences as if talking to a friend
             - Example BAD: "Name vertical bar Cozy Loft vertical bar Price vertical bar 150"
             - Example GOOD: "The first option is Cozy Loft which costs 150 dollars per night"
 
@@ -164,7 +143,8 @@ class Assistant(Agent):
             - Describe differences in plain speech
             - Example: "The first listing is cheaper at 150 versus 200 for the second one"
 
-            Speak clearly and naturally. Be concise but warm in your responses."""
+            Speak clearly and naturally, as if having a phone conversation.
+            Be concise but warm in your responses."""
         )
     
     @function_tool
@@ -208,17 +188,14 @@ async def entrypoint(ctx: agents.JobContext):
 
     # Configure the voice pipeline
     session = AgentSession(
-        # Speech-to-Text - Supports multiple languages
-        # Deepgram supports: en, es, fr, de, pt, hi, ja, zh, ko, and many more
-        # Set DEEPGRAM_LANGUAGE in .env or defaults to "en" for English
+        # Speech-to-Text
         stt=deepgram.STT(
             model="nova-2",
-            language=os.getenv("DEEPGRAM_LANGUAGE", "en"),  # Use "en" for better accuracy
-            # Fix transcription issues
-            interim_results=True,  # Enable for better real-time transcription
+            language="en",
+            # Fix "vertical bar" hallucination issue
+            interim_results=False,
             punctuate=True,
             smart_format=True,
-            endpointing_ms=300,  # Wait 300ms before finalizing transcript
         ),
 
         # Large Language Model - Ollama (local) or Groq (cloud)
@@ -227,16 +204,15 @@ async def entrypoint(ctx: agents.JobContext):
         # Text-to-Speech - Cartesia (Free Tier)
         tts=cartesia.TTS(
             api_key=os.getenv("CARTESIA_API_KEY"),
-            voice="f786b574-daa5-4673-aa0c-cbe3e8534c02",  # English voice
-            speed=0.9,  # Natural speed
+            voice="f786b574-daa5-4673-aa0c-cbe3e8534c02",
+            speed=0.9,  # Slightly slower for smoother delivery
         ),
         
-        # Voice Activity Detection - Responsive timing
+        # Voice Activity Detection - Improved sensitivity
         vad=silero.VAD.load(
-            min_speech_duration=0.3,  # Detect speech after 300ms
-            min_silence_duration=0.6,  # Wait 600ms of silence (faster response)
-            prefix_padding_duration=0.5,  # Pad before speech starts
-            activation_threshold=0.5,  # Default threshold
+            min_speech_duration=0.3,  # Minimum 300ms of speech
+            min_silence_duration=0.5,  # Wait 500ms of silence before stopping
+            padding_duration=0.2,     # Add 200ms padding
         ),
 
         # MCP servers - Your Airbnb server via Stdio (RECOMMENDED)
@@ -248,14 +224,9 @@ async def entrypoint(ctx: agents.JobContext):
                     "--directory",
                     os.path.join(os.path.dirname(__file__), "mcp-server-airbnb"),
                     "run",
-                    "--no-project",  # Don't look for pyproject.toml in parent dirs
                     "python",
                     "server.py"
-                ],
-                env={
-                    "PYTHONUNBUFFERED": "1",  # Disable output buffering for faster stdio
-                    "PYTHONDONTWRITEBYTECODE": "1",  # Skip .pyc files
-                }
+                ]
             )
         ],
     )
@@ -264,10 +235,11 @@ async def entrypoint(ctx: agents.JobContext):
     await session.start(
         room=ctx.room,
         agent=Assistant(),
-        room_input_options=RoomInputOptions(
-            # Enable noise cancellation - BVC (Background Voice Cancellation)
-            noise_cancellation=noise_cancellation.BVC(),
-        ),
+        # room_input_options=RoomInputOptions(
+            # Enable noise cancellation
+            # noise_cancellation=noise_cancellation.BVC(),
+            # For telephony, use: noise_cancellation.BVCTelephony()
+        # ),
         room_output_options=RoomOutputOptions(transcription_enabled=True),
     )
     
@@ -290,7 +262,4 @@ async def entrypoint(ctx: agents.JobContext):
 
 if __name__ == "__main__":
     # Run the agent using LiveKit CLI
-    cli.run_app(WorkerOptions(
-        entrypoint_fnc=entrypoint,
-        prewarm_fnc=prewarm,
-    ))
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint, prewarm_fnc=prewarm))
