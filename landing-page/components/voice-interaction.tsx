@@ -226,10 +226,10 @@ export function VoiceInteraction() {
             What you can ask:
           </p>
           <ul className="text-sm text-muted-foreground space-y-1">
-            <li>• "Find me Airbnb listings in Paris"</li>
-            <li>• "Show me beach properties under $150 per night"</li>
-            <li>• "Compare these two listings for me"</li>
-            <li>• "Calculate the total cost for a 5-day trip"</li>
+            <li>• &quot;Find me Airbnb listings in Paris&quot;</li>
+            <li>• &quot;Show me beach properties under $150 per night&quot;</li>
+            <li>• &quot;Compare these two listings for me&quot;</li>
+            <li>• &quot;Calculate the total cost for a 5-day trip&quot;</li>
           </ul>
         </div>
       </div>
@@ -270,7 +270,7 @@ function SimpleVoiceAssistant() {
           {state === "listening" && "🎤 Listening..."}
           {state === "thinking" && "🤔 Processing..."}
           {state === "speaking" && "🗣️ VoycePlan is responding..."}
-          {state === "idle" && "💬 Say something to start"}
+          {!state && "💬 Say something to start"}
         </h3>
         <p className="text-sm text-muted-foreground">
           Speak naturally about your travel plans. Pause for 1.5 seconds to finish.
@@ -285,7 +285,7 @@ function SimpleVoiceAssistant() {
       {/* Transcript Display */}
       <div className="w-full max-w-2xl space-y-4">
         {/* User transcript */}
-        {userTranscript && state !== "idle" && (
+        {userTranscript && state && (
           <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border border-blue-200 dark:border-blue-800">
             <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">You said:</p>
             <p className="text-sm">{userTranscript}</p>
